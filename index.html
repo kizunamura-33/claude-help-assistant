@@ -1,149 +1,17 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude ヘルプアシスタント</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f4f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
-.wrap{width:100%;max-width:680px}
-h1{font-size:18px;font-weight:600;color:#1a1a1a;text-align:center;margin-bottom:4px}
-.sub{font-size:13px;color:#666;text-align:center;margin-bottom:16px}
-.app{display:flex;flex-direction:column;height:600px;border:1px solid #e0dfd8;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.hdr{padding:14px 20px;border-bottom:1px solid #f0efe8;background:#fff;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.hdr-icon{width:32px;height:32px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center}
-.hdr h2{font-size:14px;font-weight:600;color:#1a1a1a}
-.hdr p{font-size:12px;color:#888}
-.tabs{padding:10px 16px;border-bottom:1px solid #f0efe8;display:flex;gap:6px;flex-wrap:wrap;background:#fafaf7;flex-shrink:0}
-.tb{font-size:11px;padding:4px 10px;border-radius:100px;border:1px solid #e0dfd8;background:#fff;color:#666;cursor:pointer;font-family:inherit}
-.tb.on{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
-.msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
-.msg{display:flex;gap:10px;align-items:flex-start}
-.msg.u{flex-direction:row-reverse}
-.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
-.av.ai{background:#EEEDFE;color:#534AB7}
-.av.u{background:#f0efe8;color:#666}
-.bbl{max-width:78%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
-.msg.ai .bbl{background:#fafaf7;color:#1a1a1a;border:1px solid #e8e7df;border-top-left-radius:4px}
-.msg.u .bbl{background:#534AB7;color:#fff;border-top-right-radius:4px}
-.typing{display:flex;gap:4px;align-items:center;padding:8px 2px}
-.dot{width:6px;height:6px;border-radius:50%;background:#AFA9EC;animation:bounce 1.2s infinite}
-.dot:nth-child(2){animation-delay:.2s}
-.dot:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-.inp-area{padding:12px 16px;border-top:1px solid #f0efe8;background:#fff;flex-shrink:0}
-.inp-row{display:flex;gap:8px;align-items:flex-end}
-.inp-row textarea{flex:1;resize:none;border:1px solid #d8d7cf;border-radius:10px;padding:9px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;background:#fafaf7;line-height:1.5;min-height:38px;max-height:100px;outline:none}
-.inp-row textarea:focus{border-color:#7F77DD;background:#fff}
-.sb{width:36px;height:36px;border-radius:10px;background:#534AB7;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sb:disabled{opacity:.3;cursor:default}
-.sugs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.sg{font-size:11px;padding:4px 10px;border-radius:100px;border:1px solid #e0dfd8;background:#fafaf7;color:#666;cursor:pointer;font-family:inherit}
-.wlc{text-align:center;padding:32px 20px;color:#666}
-.wlc-icon{width:52px;height:52px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
-.wlc h3{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
-.wlc p{font-size:13px;line-height:1.6}
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px;text-align:left}
-.card{padding:12px;border:1px solid #e0dfd8;border-radius:10px;cursor:pointer;background:#fff}
-.card:hover{border-color:#7F77DD;background:#EEEDFE}
-.ci{font-size:18px;margin-bottom:5px}
-.ct{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
-.cd{font-size:11px;color:#888}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <h1>Claude ヘルプアシスタント</h1>
-  <p class="sub">Claudeの機能について何でも聞いてみよう</p>
-  <div class="app">
-    <div class="hdr">
-      <div class="hdr-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="#534AB7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
-      <div><h2>Claude ヘルプアシスタント</h2><p>Claude全般の使い方・機能について日本語でサポート</p></div>
-    </div>
-    <div class="tabs">
-      <button class="tb on" onclick="setT('all',this)">すべて</button>
-      <button class="tb" onclick="setT('cowork',this)">Cowork</button>
-      <button class="tb" onclick="setT('code',this)">Claude Code</button>
-      <button class="tb" onclick="setT('chat',this)">チャット</button>
-      <button class="tb" onclick="setT('projects',this)">プロジェクト</button>
-      <button class="tb" onclick="setT('api',this)">API</button>
-      <button class="tb" onclick="setT('plans',this)">プラン</button>
-    </div>
-    <div class="msgs" id="msgs">
-      <div class="wlc" id="wlc">
-        <div class="wlc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="#534AB7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
-        <h3>Claudeの使い方を聞いてみよう</h3>
-        <p>Cowork・Claude Code・チャット・プロジェクト機能など<br>Claude全般について日本語で質問できます。</p>
-        <div class="cards">
-          <div class="card" onclick="askQ('Coworkとは何ですか？')"><div class="ci">🖥️</div><div class="ct">Cowork</div><div class="cd">デスクトップ自動化</div></div>
-          <div class="card" onclick="askQ('Claude Codeのインストール方法を教えて')"><div class="ci">💻</div><div class="ct">Claude Code</div><div class="cd">AIコーディング</div></div>
-          <div class="card" onclick="askQ('プロジェクト機能の使い方を教えて')"><div class="ci">📁</div><div class="ct">プロジェクト</div><div class="cd">会話整理</div></div>
-          <div class="card" onclick="askQ('Claudeのプランの違いを教えて')"><div class="ci">⭐</div><div class="ct">プラン</div><div class="cd">Free/Pro/Team</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="inp-area">
-      <div class="inp-row">
-        <textarea id="inp" placeholder="Claudeの機能について質問する..." rows="1" onkeydown="hk(event)" oninput="rsz(this)"></textarea>
-        <button class="sb" id="sbtn" onclick="send()"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
-      </div>
-      <div class="sugs">
-        <button class="sg" onclick="askQ('メモリ機能は？')">💾 メモリ</button>
-        <button class="sg" onclick="askQ('Artifactsとは？')">📄 Artifacts</button>
-        <button class="sg" onclick="askQ('APIキーの取得方法？')">🔑 APIキー</button>
-        <button class="sg" onclick="askQ('使用制限は？')">📊 使用制限</button>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Claude ヘルプアシスタント</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,sans-serif;background:#f5f4f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}.wrap{width:100%;max-width:680px}h1{font-size:18px;font-weight:600;color:#1a1a1a;text-align:center;margin-bottom:4px}.sub{font-size:13px;color:#666;text-align:center;margin-bottom:16px}.app{display:flex;flex-direction:column;height:640px;border:1px solid #e0dfd8;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06)}.hdr{padding:12px 20px;border-bottom:1px solid #f0efe8;background:#fff;display:flex;align-items:center;gap:12px;flex-shrink:0}.hi{width:30px;height:30px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0}.hdr h2{font-size:13px;font-weight:600;color:#1a1a1a}.hdr p{font-size:11px;color:#888}.kb{padding:8px 16px;border-bottom:1px solid #f0efe8;background:#fafaf7;display:flex;align-items:center;gap:8px;flex-shrink:0}.kbl{font-size:11px;color:#666;flex-shrink:0}.ki{flex:1;font-size:11px;padding:5px 8px;border:1px solid #d8d7cf;border-radius:6px;font-family:monospace;background:#fff;color:#1a1a1a;outline:none}.ki:focus{border-color:#7F77DD}.kbtn{font-size:11px;padding:5px 12px;border-radius:6px;border:none;background:#534AB7;color:#fff;cursor:pointer;flex-shrink:0}.kbtn:hover{opacity:.85}.kok{font-size:10px;color:#3C3489;flex-shrink:0}.tabs{padding:8px 16px;border-bottom:1px solid #f0efe8;display:flex;gap:6px;flex-wrap:wrap;background:#fafaf7;flex-shrink:0}.tb{font-size:11px;padding:4px 10px;border-radius:100px;border:1px solid #e0dfd8;background:#fff;color:#666;cursor:pointer;font-family:inherit}.tb.on{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}.msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}.msg{display:flex;gap:10px;align-items:flex-start}.msg.u{flex-direction:row-reverse}.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}.av.ai{background:#EEEDFE;color:#534AB7}.av.u{background:#f0efe8;color:#666}.bbl{max-width:78%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.65;white-space:pre-wrap;word-break:break-word}.msg.ai .bbl{background:#fafaf7;color:#1a1a1a;border:1px solid #e8e7df;border-top-left-radius:4px}.msg.u .bbl{background:#534AB7;color:#fff;border-top-right-radius:4px}.typing{display:flex;gap:4px;align-items:center;padding:8px 2px}.dot{width:6px;height:6px;border-radius:50%;background:#AFA9EC;animation:bounce 1.2s infinite}.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}.ia{padding:10px 14px;border-top:1px solid #f0efe8;background:#fff;flex-shrink:0}.ir{display:flex;gap:8px;align-items:flex-end}.ir textarea{flex:1;resize:none;border:1px solid #d8d7cf;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;background:#fafaf7;line-height:1.5;min-height:36px;max-height:90px;outline:none}.ir textarea:focus{border-color:#7F77DD;background:#fff}.sb{width:34px;height:34px;border-radius:10px;background:#534AB7;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}.sb:disabled{opacity:.3;cursor:default}.sugs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.sg{font-size:11px;padding:3px 9px;border-radius:100px;border:1px solid #e0dfd8;background:#fafaf7;color:#666;cursor:pointer;font-family:inherit}.wlc{text-align:center;padding:24px 20px;color:#666}.wi{width:46px;height:46px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}.wlc h3{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:6px}.wlc p{font-size:12px;line-height:1.6}.wlc a{color:#534AB7}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px;text-align:left}.card{padding:10px;border:1px solid #e0dfd8;border-radius:10px;cursor:pointer;background:#fff}.card:hover{border-color:#7F77DD;background:#EEEDFE}.ci{font-size:16px;margin-bottom:4px}.ct{font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:1px}.cd{font-size:10px;color:#888}</style></head><body><div class="wrap"><h1>Claude ヘルプアシスタント</h1><p class="sub">Claudeの機能について何でも聞いてみよう</p><div class="app"><div class="hdr"><div class="hi"><svg width="14" height="14" viewBox="0 0 24 24" fill="#534AB7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div><div><h2>Claude ヘルプアシスタント</h2><p>Claude全般の使い方・機能について日本語でサポート</p></div></div><div class="kb"><span class="kbl">🔑 APIキー:</span><input class="ki" type="password" id="akin" placeholder="sk-ant-... を入力して保存"><button class="kbtn" onclick="saveKey()">保存</button><span class="kok" id="kst"></span></div><div class="tabs"><button class="tb on" onclick="setT('all',this)">すべて</button><button class="tb" onclick="setT('cowork',this)">Cowork</button><button class="tb" onclick="setT('code',this)">Claude Code</button><button class="tb" onclick="setT('chat',this)">チャット</button><button class="tb" onclick="setT('projects',this)">プロジェクト</button><button class="tb" onclick="setT('api',this)">API</button><button class="tb" onclick="setT('plans',this)">プラン</button></div><div class="msgs" id="msgs"><div class="wlc" id="wlc"><div class="wi"><svg width="20" height="20" viewBox="0 0 24 24" fill="#534AB7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div><h3>Claudeの使い方を聞いてみよう</h3><p>上のAPIキー欄にAnthropic APIキーを入力して「保存」を押すと質問できます。<br><a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> で取得できます。</p><div class="cards"><div class="card" onclick="askQ('Coworkとは？')"><div class="ci">🖥️</div><div class="ct">Cowork</div><div class="cd">デスクトップ自動化</div></div><div class="card" onclick="askQ('Claude Codeのインストール方法を教えて')"><div class="ci">💻</div><div class="ct">Claude Code</div><div class="cd">AIコーディング</div></div><div class="card" onclick="askQ('プロジェクト機能の使い方を教えて')"><div class="ci">📁</div><div class="ct">プロジェクト</div><div class="cd">会話整理</div></div><div class="card" onclick="askQ('Claudeのプランの違いを教えて')"><div class="ci">⭐</div><div class="ct">プラン</div><div class="cd">Free/Pro/Team</div></div></div></div></div><div class="ia"><div class="ir"><textarea id="inp" placeholder="Claudeの機能について質問する..." rows="1" onkeydown="hk(event)" oninput="rsz(this)"></textarea><button class="sb" id="sbtn" onclick="send()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div><div class="sugs"><button class="sg" onclick="askQ('メモリ機能は？')">💾 メモリ</button><button class="sg" onclick="askQ('Artifactsとは？')">📄 Artifacts</button><button class="sg" onclick="askQ('APIキーの取得方法？')">🔑 APIキー</button><button class="sg" onclick="askQ('使用制限は？')">📊 使用制限</button></div></div></div></div><script>
 var M=[],L=false,T="all";
 var C={all:"",cowork:"Coworkについて詳しく。",code:"Claude Codeについて詳しく。",chat:"チャット機能について詳しく。",projects:"プロジェクト機能について詳しく。",api:"APIについて詳しく。",plans:"プランの違いについて詳しく。"};
-var S="あなたはAnthropic Claude製品のサポートアシスタントです。日本語で簡潔に回答してください。docs.claude.comやsupport.claude.comも案内してください。";
+var SYS="あなたはAnthropicClaude製品のサポートアシスタントです。日本語で簡潔に回答してください。docs.claude.comやsupport.claude.comも案内してください。";
+function init(){var k=localStorage.getItem("ak");if(k){document.getElementById("akin").value=k;document.getElementById("kst").textContent="✔ 設定済";}}
+function saveKey(){var k=document.getElementById("akin").value.trim();if(!k)return;localStorage.setItem("ak",k);document.getElementById("kst").textContent="✔ 保存済";}
+function getKey(){return localStorage.getItem("ak")||document.getElementById("akin").value.trim();}
 function setT(t,el){T=t;document.querySelectorAll(".tb").forEach(function(b){b.className="tb"});el.className="tb on";}
-function rsz(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,100)+"px";}
+function rsz(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,90)+"px";}
 function hk(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}
 function askQ(q){document.getElementById("inp").value=q;send();}
-function addMsg(role,txt){
-  M.push({role:role,content:txt});
-  var w=document.getElementById("wlc");if(w)w.remove();
-  var c=document.getElementById("msgs");
-  var d=document.createElement("div");d.className="msg "+(role==="user"?"u":"ai");
-  var av=document.createElement("div");av.className="av "+(role==="user"?"u":"ai");av.textContent=role==="user"?"あ":"C";
-  var b=document.createElement("div");b.className="bbl";b.textContent=txt;
-  d.appendChild(av);d.appendChild(b);c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-function showTyp(){
-  var w=document.getElementById("wlc");if(w)w.remove();
-  var c=document.getElementById("msgs");
-  var d=document.createElement("div");d.className="msg ai";d.id="typ";
-  d.innerHTML='<div class="av ai">C</div><div class="bbl"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-function send(){
-  var el=document.getElementById("inp");
-  var txt=el.value.trim();
-  if(!txt||L)return;
-  L=true;document.getElementById("sbtn").disabled=true;
-  el.value="";el.style.height="auto";
-  addMsg("user",txt);showTyp();
-  var extra=C[T]||"";
-  fetch("/api/chat",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system:S+(extra?" "+extra:""),messages:M.slice(-10)})
-  }).then(function(r){return r.json();}).then(function(data){
-    var t=document.getElementById("typ");if(t)t.remove();
-    var rep=(data.content||[]).map(function(x){return x.text||"";}).join("")||"エラーが発生しました。";
-    addMsg("assistant",rep);
-    L=false;document.getElementById("sbtn").disabled=false;document.getElementById("inp").focus();
-  }).catch(function(e){
-    var t=document.getElementById("typ");if(t)t.remove();
-    addMsg("assistant","エラー: "+e.message);
-    L=false;document.getElementById("sbtn").disabled=false;
-  });
-}
+function addMsg(role,txt){M.push({role:role,content:txt});var w=document.getElementById("wlc");if(w)w.remove();var c=document.getElementById("msgs");var d=document.createElement("div");d.className="msg "+(role==="user"?"u":"ai");var av=document.createElement("div");av.className="av "+(role==="user"?"u":"ai");av.textContent=role==="user"?"あ":"C";var b=document.createElement("div");b.className="bbl";b.textContent=txt;d.appendChild(av);d.appendChild(b);c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function showTyp(){var w=document.getElementById("wlc");if(w)w.remove();var c=document.getElementById("msgs");var d=document.createElement("div");d.className="msg ai";d.id="typ";d.innerHTML='<div class="av ai">C</div><div class="bbl"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function send(){var k=getKey();if(!k){alert("APIキーを入力して保存を押してください。");return;}var el=document.getElementById("inp");var txt=el.value.trim();if(!txt||L)return;L=true;document.getElementById("sbtn").disabled=true;el.value="";el.style.height="auto";addMsg("user",txt);showTyp();var extra=C[T]||"";fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":k,"anthropic-version":"2023-06-01"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system:SYS+(extra?" "+extra:""),messages:M.slice(-10)})}).then(function(r){return r.json();}).then(function(data){var t=document.getElementById("typ");if(t)t.remove();var rep=(data.content||[]).map(function(x){return x.text||"";}).join("");if(!rep){rep="エラー: "+(data.error?data.error.message:JSON.stringify(data));}addMsg("assistant",rep);L=false;document.getElementById("sbtn").disabled=false;document.getElementById("inp").focus();}).catch(function(e){var t=document.getElementById("typ");if(t)t.remove();addMsg("assistant","接続エラー: "+e.message);L=false;document.getElementById("sbtn").disabled=false;});}
+init();
 </script>
-</body>
-</html>
+</body></html>
