@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude ヘルプアシスタント</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
+  .container { width: 100%; max-width: 680px; }
+  h1 { font-size: 18px; font-weight: 600; color: #1a1a1a; text-align: center; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #666; text-align: center; margin-bottom: 16px; }
+  .app { display: flex; flex-direction: column; height: 600px; border: 1px solid #e0dfd8; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .header { padding: 14px 20px; border-bottom: 1px solid #f0efe8; background: #fff; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .header-icon { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .header-text h2 { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .header-text p { font-size: 12px; color: #888; margin-top: 1px; }
+  .topic-bar { padding: 10px 16px; border-bottom: 1px solid #f0efe8; display: flex; gap: 6px; flex-wrap: wrap; background: #fafaf7; flex-shrink: 0; }
+  .topic-btn { font-size: 11px; padding: 4px 10px; border-radius: 100px; border: 1px solid #e0dfd8; background: #fff; color: #666; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .topic-btn:hover, .topic-btn.active { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
+  .messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+  .msg { display: flex; gap: 10px; align-items: flex-start; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+  .msg.user { flex-direction: row-reverse; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .avatar.ai { background: #EEEDFE; color: #534AB7; }
+  .avatar.user { background: #f0efe8; color: #666; }
+  .bubble { max-width: 78%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.65; }
+  .msg.ai .bubble { background: #fafaf7; color: #1a1a1a; border: 1px solid #e8e7df; border-top-left-radius: 4px; }
+  .msg.user .bubble { background: #534AB7; color: #fff; border-top-right-radius: 4px; }
+  .bubble a { color: #534AB7; }
+  .msg.user .bubble a { color: #AFA9EC; }
+  .bubble strong { font-weight: 600; }
+  .bubble ul { padding-left: 16px; margin: 6px 0; }
+  .bubble li { margin: 3px 0; }
+  .bubble code { font-family: monospace; font-size: 11px; background: rgba(83,74,183,0.1); padding: 1px 5px; border-radius: 4px; }
+  .typing { display: flex; gap: 4px; align-items: center; padding: 8px 2px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #AFA9EC; animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-5px); opacity: 1; } }
+  .input-area { padding: 12px 16px; border-top: 1px solid #f0efe8; background: #fff; flex-shrink: 0; }
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .input-row textarea { flex: 1; resize: none; border: 1px solid #d8d7cf; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-family: inherit; color: #1a1a1a; background: #fafaf7; line-height: 1.5; min-height: 38px; max-height: 100px; outline: none; transition: border-color 0.15s; }
+  .input-row textarea:focus { border-color: #7F77DD; background: #fff; }
+  .input-row textarea::placeholder { color: #aaa; }
+  .send-btn { width: 36px; height: 36px; border-radius: 10px; background: #534AB7; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: opacity 0.15s; }
+  .send-btn:hover { opacity: 0.85; }
+  .send-btn:disabled { opacity: 0.3; cursor: default; }
+  .suggestions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .sug-btn { font-size: 11px; padding: 4px 10px; border-radius: 100px; border: 1px solid #e0dfd8; background: #fafaf7; color: #666; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .sug-btn:hover { border-color: #7F77DD; color: #534AB7; }
+  .welcome { text-align: center; padding: 32px 20px; color: #666; }
+  .welcome-icon { width: 52px; height: 52px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .welcome h3 { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+  .welcome p { font-size: 13px; line-height: 1.6; }
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; text-align: left; }
+  .card { padding: 12px; border: 1px solid #e0dfd8; border-radius: 10px; cursor: pointer; transition: all 0.15s; background: #fff; }
+  .card:hover { border-color: #7F77DD; background: #EEEDFE; }
+  .card-icon { font-size: 18px; margin-bottom: 5px; }
+  .card-title { font-size: 12px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+  .card-desc { font-size: 11px; color: #888; line-height: 1.4; }
+  @media (max-width: 480px) { .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Claude ヘルプアシスタント</h1>
+  <p class="subtitle">Claudeの機能について何でも聞いてみよう</p>
+  <div class="app" id="app">
+    <div class="header">
+      <div class="header-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#534AB7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+      </div>
+      <div class="header-text">
+        <h2>Claude ヘルプアシスタント</h2>
+        <p>Claude全般の使い方・機能について日本語でサポート</p>
+      </div>
+    </div>
+    <div class="topic-bar">
+      <button class="topic-btn active" onclick="setTopic('all',this)">すべて</button>
+      <button class="topic-btn" onclick="setTopic('cowork',this)">Cowork</button>
+      <button class="topic-btn" onclick="setTopic('code',this)">Claude Code</button>
+      <button class="topic-btn" onclick="setTopic('chat',this)">チャット</button>
+      <button class="topic-btn" onclick="setTopic('projects',this)">プロジェクト</button>
+      <button class="topic-btn" onclick="setTopic('api',this)">API</button>
+      <button class="topic-btn" onclick="setTopic('plans',this)">プラン</button>
+    </div>
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#534AB7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        </div>
+        <h3>Claudeの使い方を聞いてみよう</h3>
+        <p>Cowork・Claude Code・チャット・プロジェクト機能など<br>Claude全般について日本語で質問できます。</p>
+        <div class="cards">
+          <div class="card" onclick="askQ('Coworkとは何ですか？何ができますか？')"><div class="card-icon">🖥️</div><div class="card-title">Coworkについて</div><div class="card-desc">デスクトップの操作自動化ツール</div></div>
+          <div class="card" onclick="askQ('Claude Codeのインストール方法を教えてください')"><div class="card-icon">💻</div><div class="card-title">Claude Code</div><div class="card-desc">コマンドラインAIコーディング</div></div>
+          <div class="card" onclick="askQ('プロジェクト機能の使い方を教えてください')"><div class="card-icon">📁</div><div class="card-title">プロジェクト機能</div><div class="card-desc">会話の整理と知識ベース</div></div>
+          <div class="card" onclick="askQ('Claude ProとFreeプランの違いは？')"><div class="card-icon">⭐</div><div class="card-title">プランの違い</div><div class="card-desc">Free・Pro・Teamの比較</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="input-area">
+      <div class="input-row">
+        <textarea id="input" placeholder="Claudeの機能について質問する..." rows="1" onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="send()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="suggestions">
+        <button class="sug-btn" onclick="askQ('メモリ機能はどう使いますか？')">💾 メモリ機能</button>
+        <button class="sug-btn" onclick="askQ('Artifactsとは何ですか？')">📄 Artifacts</button>
+        <button class="sug-btn" onclick="askQ('APIキーの取得方法は？')">🔑 APIキー</button>
+        <button class="sug-btn" onclick="askQ('使用制限はありますか？')">📊 使用制限</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+let msgs = [];
+let loading = false;
+let topic = 'all';
+const topicCtx = {
+  all: '',
+  cowork: 'Cowork（デスクトップ自動化ツール）について特に詳しく説明してください。',
+  code: 'Claude Code（コマンドラインAIコーディングツール）について特に詳しく説明してください。',
+  chat: 'Claude.aiのチャット機能について特に詳しく説明してください。',
+  projects: 'Claudeのプロジェクト機能について特に詳しく説明してください。',
+  api: 'Claude APIについて特に詳しく説明してください。',
+  plans: 'ClaudeのFree・Pro・Team・Enterpriseプランの違いについて特に詳しく説明してください。'
+};
+const sys = 'あなたはAnthropicのClaude製品全般に精通したサポートアシスタントです。日本語で回答してください。Claude.ai、Claude Code、Cowork、Claude API、プランの違いについて質問に答えてください。回答は簡潔でわかりやすい日本語で400文字以内。公式URLも案内してください（docs.claude.com, support.claude.com）。';
+function setTopic(t, el) { topic = t; document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+function resize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+function askQ(q) { document.getElementById('input').value = q; send(); }
+function addMsg(role, content) {
+  msgs.push({ role, content });
+  const w = document.getElementById('welcome'); if (w) w.remove();
+  const c = document.getElementById('messages');
+  const d = document.createElement('div'); d.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  const av = document.createElement('div'); av.className = 'avatar ' + (role === 'user' ? 'user' : 'ai'); av.textContent = role === 'user' ? 'あ' : 'C';
+  const b = document.createElement('div'); b.className = 'bubble'; b.innerHTML = fmt(content);
+  d.appendChild(av); d.appendChild(b); c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function fmt(t) {
+  return t.replace(/**(.*?)**/g,'<strong>$1</strong>').replace(/`(.*?)`/g,'<code>$1</code>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*</li>)/gs,m=>'<ul>'+m+'</ul>')
+    .replace(/(https?://[^s<]+)/g,'<a href="$1" target="_blank">$1</a>').replace(/
+/g,'<br>');
+}
+function showTyping() {
+  const w = document.getElementById('welcome'); if (w) w.remove();
+  const c = document.getElementById('messages');
+  const d = document.createElement('div'); d.className = 'msg ai'; d.id = 'typing';
+  d.innerHTML = '<div class="avatar ai">C</div><div class="bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+async function send() {
+  const inp = document.getElementById('input'); const text = inp.value.trim();
+  if (!text || loading) return;
+  loading = true; document.getElementById('send-btn').disabled = true;
+  inp.value = ''; inp.style.height = 'auto';
+  addMsg('user', text); showTyping();
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        system: sys + (topicCtx[topic] ? '
+
+特別な指示: ' + topicCtx[topic] : ''),
+        messages: msgs.slice(-10) })
+    });
+    const data = await res.json();
+    document.getElementById('typing')?.remove();
+    addMsg('assistant', data.content?.map(b => b.text||'').join('') || 'エラーが発生しました。');
+  } catch(e) { document.getElementById('typing')?.remove(); addMsg('assistant', '接続エラーが発生しました。'); }
+  loading = false; document.getElementById('send-btn').disabled = false; inp.focus();
+}
+</script>
+</body>
+</html>
