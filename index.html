@@ -100,7 +100,7 @@ h1{font-size:18px;font-weight:600;color:#1a1a1a;text-align:center;margin-bottom:
 <script>
 var M=[],L=false,T="all";
 var C={all:"",cowork:"Coworkについて詳しく。",code:"Claude Codeについて詳しく。",chat:"チャット機能について詳しく。",projects:"プロジェクト機能について詳しく。",api:"APIについて詳しく。",plans:"プランの違いについて詳しく。"};
-var S="あなたはAnthropicClaude製品のサポートアシスタントです。日本語で簡潔に回答してください。docs.claude.comやsupport.claude.comも案内してください。";
+var S="あなたはAnthropic Claude製品のサポートアシスタントです。日本語で簡潔に回答してください。docs.claude.comやsupport.claude.comも案内してください。";
 function setT(t,el){T=t;document.querySelectorAll(".tb").forEach(function(b){b.className="tb"});el.className="tb on";}
 function rsz(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,100)+"px";}
 function hk(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}
@@ -129,7 +129,7 @@ function send(){
   el.value="";el.style.height="auto";
   addMsg("user",txt);showTyp();
   var extra=C[T]||"";
-  fetch("https://api.anthropic.com/v1/messages",{
+  fetch("/api/chat",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system:S+(extra?" "+extra:""),messages:M.slice(-10)})
